@@ -1,0 +1,83 @@
+
+ * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 239-821-259
+192.168.134.1 - - [25/May/2018 01:54:20] "GET /user1 HTTP/1.1" 404 -
+192.168.134.1 - - [25/May/2018 01:54:20] "GET /static/bootstrap/css/bootstrap.min.css?bootstrap=3.3.7.1.dev1 HTTP/1.1" 304 -
+192.168.134.1 - - [25/May/2018 01:54:20] "GET /static/bootstrap/jquery.min.js?bootstrap=3.3.7.1.dev1 HTTP/1.1" 304 -
+192.168.134.1 - - [25/May/2018 01:54:20] "GET /static/bootstrap/js/bootstrap.min.js?bootstrap=3.3.7.1.dev1 HTTP/1.1" 304 -
+192.168.134.1 - - [25/May/2018 01:54:20] "GET /static/moment-with-locales.min.js HTTP/1.1" 304 -
+192.168.134.1 - - [25/May/2018 01:54:22] "GET /user HTTP/1.1" 200 -
+192.168.134.1 - - [25/May/2018 01:54:25] "GET /user1 HTTP/1.1" 404 -
+192.168.134.1 - - [25/May/2018 01:54:26] "GET /user HTTP/1.1" 200 -
+192.168.134.1 - - [25/May/2018 01:54:27] "GET / HTTP/1.1" 200 -
+192.168.134.1 - - [25/May/2018 01:54:28] "GET /user HTTP/1.1" 200 -
+192.168.134.1 - - [25/May/2018 02:18:03] "POST /user HTTP/1.1" 302 -
+192.168.134.1 - - [25/May/2018 02:18:03] "GET /user HTTP/1.1" 200 -
+192.168.134.1 - - [25/May/2018 02:18:09] "POST /user HTTP/1.1" 302 -
+192.168.134.1 - - [25/May/2018 02:18:09] "GET /user HTTP/1.1" 200 -
+send: 'ehlo localhost.localdomain\r\n'
+reply: b'250-mail\r\n'
+reply: b'250-PIPELINING\r\n'
+reply: b'250-AUTH LOGIN PLAIN\r\n'
+reply: b'250-AUTH=LOGIN PLAIN\r\n'
+reply: b'250-coremail 1Uxr2xKj7kG0xkI17xGrU7I0s8FY2U3Uj8Cz28x1UUUUU7Ic2I0Y2UF54kDcUCa0xDrUUUUj\r\n'
+reply: b'250-STARTTLS\r\n'
+reply: b'250 8BITMIME\r\n'
+reply: retcode (250); Msg: b'mail\nPIPELINING\nAUTH LOGIN PLAIN\nAUTH=LOGIN PLAIN\ncoremail 1Uxr2xKj7kG0xkI17xGrU7I0s8FY2U3Uj8Cz28x1UUUUU7Ic2I0Y2UF54kDcUCa0xDrUUUUj\nSTARTTLS\n8BITMIME'
+send: 'AUTH PLAIN AGxpbndlbmp1bmlkQDE2My5jb20AbDk2MzI1OA==\r\n'
+reply: b'235 Authentication successful\r\n'
+reply: retcode (235); Msg: b'Authentication successful'
+send: 'mail FROM:<linwenjunid@163.com>\r\n'
+reply: b'250 Mail OK\r\n'
+reply: retcode (250); Msg: b'Mail OK'
+send: 'rcpt TO:<linwj@zjiec.com>\r\n'
+reply: b'250 Mail OK\r\n'
+reply: retcode (250); Msg: b'Mail OK'
+send: 'data\r\n'
+reply: b'354 End data with <CR><LF>.<CR><LF>\r\n'
+reply: retcode (354); Msg: b'End data with <CR><LF>.<CR><LF>'
+data: (354, b'End data with <CR><LF>.<CR><LF>')
+send: b'Content-Type: multipart/mixed; boundary="===============1789743003=="\r\nMIME-Version: 1.0\r\nSubject: FlaskyNew User\r\nFrom: =?utf-8?q?Flasky_Admin?= <linwenjunid@163.com>\r\nTo: linwj@zjiec.com\r\nDate: Fri, 25 May 2018 02:18:09 -0700\r\nMessage-ID: <152723988931.4882.10830952719451348242@localhost.localdomain>\r\n\r\n--===============1789743003==\r\nContent-Type: multipart/alternative; boundary="===============1079826387=="\r\nMIME-Version: 1.0\r\n\r\n--===============1079826387==\r\nContent-Type: text/plain; charset="utf-8"\r\nMIME-Version: 1.0\r\nContent-Transfer-Encoding: 7bit\r\n\r\nadd new user: Linwj \r\n--===============1079826387==\r\nContent-Type: text/html; charset="utf-8"\r\nMIME-Version: 1.0\r\nContent-Transfer-Encoding: 7bit\r\n\r\n<h1>add new user:Linwj </h1>\r\n--===============1079826387==--\r\n\r\n--===============1789743003==--\r\n.\r\n'
+reply: b'250 Mail OK queued as smtp5,D9GowABXGszR1AdbDaJJAA--.1088S2 1527239890\r\n'
+reply: retcode (250); Msg: b'Mail OK queued as smtp5,D9GowABXGszR1AdbDaJJAA--.1088S2 1527239890'
+data: (250, b'Mail OK queued as smtp5,D9GowABXGszR1AdbDaJJAA--.1088S2 1527239890')
+send: 'quit\r\n'
+reply: b'221 Bye\r\n'
+reply: retcode (221); Msg: b'Bye'
+192.168.134.1 - - [27/May/2018 18:07:41] "GET /user/linwj HTTP/1.1" 404 -
+192.168.134.1 - - [27/May/2018 18:07:41] "GET /static/bootstrap/css/bootstrap.min.css?bootstrap=3.3.7.1.dev1 HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 18:07:41] "GET /static/bootstrap/jquery.min.js?bootstrap=3.3.7.1.dev1 HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 18:07:41] "GET /static/bootstrap/js/bootstrap.min.js?bootstrap=3.3.7.1.dev1 HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 18:07:41] "GET /static/moment-with-locales.min.js HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 18:07:41] "GET /static/favicon.ico HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 18:07:42] "GET /user/linwj HTTP/1.1" 404 -
+192.168.134.1 - - [27/May/2018 18:07:53] "GET / HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 18:07:54] "GET /user HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 18:07:55] "GET / HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 18:08:00] "GET /user HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 19:28:41] "GET /user HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 19:28:41] "GET /static/bootstrap/css/bootstrap.min.css?bootstrap=3.3.7.1.dev1 HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 19:28:41] "GET /static/bootstrap/jquery.min.js?bootstrap=3.3.7.1.dev1 HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 19:28:41] "GET /static/bootstrap/js/bootstrap.min.js?bootstrap=3.3.7.1.dev1 HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 19:28:41] "GET /static/moment-with-locales.min.js HTTP/1.1" 200 -
+192.168.134.1 - - [27/May/2018 19:28:41] "GET /static/favicon.ico HTTP/1.1" 200 -
+192.168.134.1 - - [28/May/2018 18:26:10] "GET / HTTP/1.1" 200 -
+192.168.134.1 - - [28/May/2018 18:26:10] "GET /static/bootstrap/css/bootstrap.min.css?bootstrap=3.3.7.1.dev1 HTTP/1.1" 304 -
+192.168.134.1 - - [28/May/2018 18:26:10] "GET /static/bootstrap/jquery.min.js?bootstrap=3.3.7.1.dev1 HTTP/1.1" 304 -
+192.168.134.1 - - [28/May/2018 18:26:10] "GET /static/bootstrap/js/bootstrap.min.js?bootstrap=3.3.7.1.dev1 HTTP/1.1" 304 -
+192.168.134.1 - - [28/May/2018 18:26:10] "GET /static/moment-with-locales.min.js HTTP/1.1" 304 -
+192.168.134.1 - - [28/May/2018 18:26:12] "GET /user HTTP/1.1" 200 -
+ * Detected change in '/flasky/config.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 239-821-259
+ * Detected change in '/flasky/manage.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 239-821-259
+ * Detected change in '/flasky/manage.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 239-821-259
