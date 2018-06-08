@@ -17,7 +17,7 @@ class Config:
         pass
 
 class DeveConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:hadoop@192.168.134.201:3306/python?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:hadoop@192.168.134.201:3306/flasky?charset=utf8'
     DEBUG=True
     MAIL_SERVER='smtp.163.com'
     MAIL_PORT=465
@@ -30,7 +30,7 @@ class TestConfig(Config):
     TESTING=True
 
 class ProdConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:hadoop@192.168.134.201:3306/python?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:hadoop@192.168.134.201:3306/flasky?charset=utf8'
     TESTING=True 
 
 config={

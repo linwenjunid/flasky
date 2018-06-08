@@ -1,0 +1,5 @@
+<p>你好， {{ user.username }},</p>
+
+<P>请点击以下链接确认您的帐户：</p>
+<p><a href="{{ url_for('auth.confirm', token=token, _external=True) }}">点击这里</a></p>
+<p>如未注册请忽略此封邮件！</p>

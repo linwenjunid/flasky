@@ -1,0 +1,9 @@
+你好， {{ user.username }},
+
+
+请点击以下链接确认您的帐户,如未注册请忽略：
+
+
+{{ url_for('auth.confirm', token=token, _external=True) }}
+
+
