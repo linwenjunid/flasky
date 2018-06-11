@@ -17,7 +17,8 @@ class Config:
         pass
 
 class DeveConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:hadoop@192.168.134.201:3306/flasky?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DEVE_SQLURL')
+    #SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:hadoop@192.168.134.201:3306/flasky?charset=utf8'
     DEBUG=True
     MAIL_SERVER='smtp.163.com'
     MAIL_PORT=465
@@ -26,12 +27,14 @@ class DeveConfig(Config):
     MAIL_PASSWORD=os.environ.get('MAIL_PASSWORD')
    
 class TestConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:hadoop@192.168.134.201:3306/testpython?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_SQLURL')
+    #SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:hadoop@192.168.134.201:3306/flaskytest?charset=utf8'
     TESTING=True
 
 class ProdConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:hadoop@192.168.134.201:3306/flasky?charset=utf8'
-    TESTING=True 
+    SQLALCHEMY_DATABASE_URI = os.environ.get('PROD_SQLURL')
+    #SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:hadoop@192.168.134.201:3306/flasky?charset=utf8'
+    TESTING=False
 
 config={
     'development':DeveConfig,
