@@ -1,0 +1,5 @@
+<p>你好， {{ user.username }},</p>
+
+<P>请点击以下链接变更你的邮箱：</p>
+<p><a href="{{ url_for('auth.change_email', token=token, _external=True) }}">点击这里</a></p
+
