@@ -4,10 +4,12 @@
 {% block title %}Flasky - Login{% endblock %}
 {% block page_content %}
 <div class="page-header">
-    <h1>Login</h1>
+    <h1>用户登录</h1>
 </div>
 <div class="col-md-4">
 {{ wtf.quick_form(form) }}
-<p>New user? <a href="{{ url_for('auth.register') }}">Click here to register</a>.</p>
+<br>
+<p>新用户? <a href="{{ url_for('auth.register') }}">注册账号</a>.</p>
+<p>忘记密码? <a href="{{ url_for('auth.password_reset_request') }}">重置密码</a>.</p>
 </div>
 {% endblock %}

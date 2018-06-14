@@ -5,13 +5,13 @@ from wtforms import ValidationError
 from ..models import User
 
 class LoginForm(FlaskForm):
-    email=StringField('Email',validators=[DataRequired(),Length(1,64),Email()])
+    email=StringField('邮箱账号',validators=[DataRequired(),Length(1,64),Email()])
 
-    password=PasswordField('Password',validators=[DataRequired()])
+    password=PasswordField('密码',validators=[DataRequired()])
 
-    remember_me=BooleanField('Keep me logged in')
+    remember_me=BooleanField('自动登录')
 
-    submit = SubmitField('Log In')
+    submit = SubmitField('登录')
 
 class RegistrationForm(FlaskForm):
     email=StringField('Email',validators=[DataRequired(),Length(1,64),Email()])
@@ -46,4 +46,23 @@ class ChangePasswordForm(FlaskForm):
 
     password2 = PasswordField('重复新密码',validators=[DataRequired()])
 
-    submit = SubmitField('Update Password')
+    submit = SubmitField('确定')
+
+class PasswordResetRequestForm(FlaskForm):
+   
+    email=StringField('邮箱账号',validators=[DataRequired(),Length(1,64),Email()])
+
+    submit = SubmitField('重置密码')
+    
+class PasswordResetForm(FlaskForm):
+    
+    password = PasswordField('新密码', validators=[DataRequired(), EqualTo('password2', message='新密码两次输入不一致。')])
+
+    password2 = PasswordField('重复新密码',validators=[DataRequired()])
+
+    submit = SubmitField('确定')
+
+
+
+
+
