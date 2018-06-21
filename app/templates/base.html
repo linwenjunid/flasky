@@ -25,11 +25,19 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/index">Flasky</a>
+            <a class="navbar-brand" href="/">Flasky</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="/user">Home</a></li>
+                {% if current_user.can(Permission.WRITE) %}
+                <li><a href="/user">User</a></li>
+                {% endif %}
+                {% if current_user.can(Permission.MODERATE) %}
+                <li><a href="/moder">Moder</a></li>
+                {% endif %}
+                {% if current_user.can(Permission.ADMIN) %}
+                <li><a href="/admin">Admin</a></li>
+                {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
               {% if current_user.is_authenticated %}

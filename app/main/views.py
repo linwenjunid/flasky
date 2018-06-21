@@ -5,15 +5,17 @@ from flask_login import login_required
 from . import main
 from .forms import NameForm
 from .. import db
-from ..models import User
+from ..models import User,Permission
 from ..email import send_email
+from ..decorators import admin_required,permission_required
 
-@main.route('/index')
+@main.route('/')
 def index():
     return render_template('index.html',current_time=datetime.utcnow())
 
 @main.route('/user',methods=['GET','POST'])
 @login_required
+@permission_required(Permission.WRITE)
 def user():
     form=NameForm()
     if form.validate_on_submit():
@@ -32,3 +34,15 @@ def user():
         return redirect(url_for('.user'))
     return render_template('user.html',
         name=session.get('name'),form=form,known=session.get('known',False))
+
+@main.route('/admin')
+@login_required
+@admin_required
+def admin():
+    return render_template('admin.html')
+
+@main.route('/moder')
+@login_required
+@permission_required(Permission.MODERATE)
+def moder():
+    return render_template('moder.html')
