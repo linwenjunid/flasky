@@ -1,17 +1,29 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf  %}
-{% block title %} Flasky {% endblock %}
+{% block title %} Flasky - 名片{% endblock %}
 
 {% block page_content %}
 <div class='page-header'>
-    <h1>Hello,{% if name %} {{name}} {% else %}Stranger{% endif %}!</h1>
-    {% if not known %}
-    <p>Pleased to meet you!</p>
-    {% else %}
-    <p>Happy to see you again!</p>
+    <h1>{{user.username}}</h1>
+    {% if user.name or user.location %}
+        <p>
+        姓名：{% if user.name  %}{{user.name }} {% endif %}
+        地址：{% if user.location  %}{{user.location }} {% endif %}
+        </p>
     {% endif %}
+    {% if user.name or user.location %}
+        <p>{{user.about_me}}</p>
+    {% endif %}
+    <p>注册时间： {{ moment(user.member_since).format('L') }}. 最后一次访问时间： {{ moment(user.last_seen).fromNow(refresh=True) }}.</p>
+    <p>
+    {% if user == current_user %}
+        <a class="btn btn-default" href="{{ url_for('main.editprofile') }}">资料编辑</a>
+    {% endif %}
+    {% if current_user.is_administrator() %}
+        <a class="btn btn-danger" href="{{ url_for('main.editprofileadmin', id=user.id) }}">资料编辑【管理员】</a>
+    {% endif %}
+    </p>
 </div>
-{{ wtf.quick_form(form) }}
 {% endblock %}
 
 

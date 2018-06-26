@@ -29,8 +29,8 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                {% if current_user.can(Permission.WRITE) %}
-                <li><a href="/user">User</a></li>
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('main.user',username=current_user.username) }}">User</a></li>
                 {% endif %}
                 {% if current_user.can(Permission.MODERATE) %}
                 <li><a href="/moder">Moder</a></li>
@@ -48,6 +48,8 @@
                 <ul class="dropdown-menu" style="min-width: 80px;">
                   <li><a href="{{ url_for('auth.change_password') }}">修改密码</a></li>
                   <li><a href="{{ url_for('auth.change_email_request') }}">修改邮箱</a></li>
+                  <li class="divider"></li>
+                  <li><a href="{{ url_for('main.editprofile') }}">编辑资料</a></li>
                   <li class="divider"></li>
                   <li><a href="{{ url_for('auth.logout') }}">退出登录</a></li>
                 </ul>
