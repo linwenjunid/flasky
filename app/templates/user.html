@@ -4,6 +4,8 @@
 
 {% block page_content %}
 <div class='page-header'>
+    <img class="img-rounded profile-thumbnail" src="{{ url_for('static', filename='favicon.ico') }}" width="150" height="150">
+    <div class="profile-header">
     <h1>{{user.username}}</h1>
     {% if user.name or user.location %}
         <p>
@@ -23,6 +25,7 @@
         <a class="btn btn-danger" href="{{ url_for('main.editprofileadmin', id=user.id) }}">资料编辑【管理员】</a>
     {% endif %}
     </p>
+    </div>
 </div>
 {% endblock %}
 
