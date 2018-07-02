@@ -4,6 +4,10 @@ from wtforms.validators import Length,Email,Regexp,DataRequired
 from wtforms import ValidationError
 from ..models import Role,User
 
+class PostForm(FlaskForm):
+    body=TextAreaField("内容",validators=[DataRequired()])
+    submit = SubmitField('发布')
+
 class NameForm(FlaskForm):
     name = StringField('What is your name?',validators=[DataRequired()])
     submit = SubmitField('Submit')
