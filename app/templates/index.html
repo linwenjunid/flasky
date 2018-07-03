@@ -19,3 +19,9 @@
 </div>
 {% endif %}
 {% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static',filename='Markdown.Converter.js') }}"></script>
+<script src="{{ url_for('static',filename='Markdown.Sanitizer.min.js') }}"></script>
+{% endblock %}
