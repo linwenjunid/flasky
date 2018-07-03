@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf  %}
+{% import "_macros.html" as macros %}
+
 {% block title %} Flasky - 名片{% endblock %}
 
 {% block page_content %}
@@ -26,8 +28,13 @@
     {% endif %}
     </p>
     </div>
-    {% include '_posts.html' %}
 </div>
+{% include '_posts.html' %}
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination,'main.user',username=user.username) }}
+</div>
+{% endif %}
 {% endblock %}
 
 

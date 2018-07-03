@@ -1,13 +1,21 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
 {% block page_content %}
 <p>时间:{{ moment(current_time).format('LLL') }}</p>
+<!--
 <p>时间:{{ moment(current_time).fromNow(refresh=True) }}</p>
 <p>时间:{{ moment().calendar() }}.</p>
+-->
 <div>
     {% if current_user.can(Permission.WRITE) %}
     {{ wtf.quick_form(form) }}
     {% endif %}
 </div>
 {% include '_posts.html' %}
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination,'main.index') }}
+</div>
+{% endif %}
 {% endblock %}
