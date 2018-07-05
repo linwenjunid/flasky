@@ -13,6 +13,15 @@ class Config:
     FLASKY_ADMIN=os.environ.get('FLASKY_ADMIN')
     #分页每页显示记录数
     FLASKY_POSTS_PER_PAGE=10
+    #ckeditor引入本地资源
+    CKEDITOR_SERVE_LOCAL=True
+    #ckeditor代码高亮
+    CKEDITOR_ENABLE_CODESNIPPET=True
+    CKEDITOR_CODE_THEME='github'
+    CKEDITOR_HEIGHT=400
+    CKEDITOR_FILE_UPLOADER='main.upload'
+    UPLOADED_PATH=os.path.join(os.path.abspath(os.path.dirname(__file__)), 'uploads')
+    #UPLOADED_PATH='/uploads'
 
     @staticmethod
     def init_app(app):

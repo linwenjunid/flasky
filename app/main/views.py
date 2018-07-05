@@ -1,4 +1,7 @@
-from flask import render_template,redirect,session,url_for,flash,current_app,request,abort
+import os
+import random
+
+from flask import render_template,redirect,session,url_for,flash,current_app,request,abort,send_from_directory
 from datetime import datetime
 from flask_login import login_required,current_user
 
@@ -8,6 +11,25 @@ from .. import db
 from ..models import User,Permission,Role,Post
 from ..email import send_email
 from ..decorators import admin_required,permission_required
+
+from flask_ckeditor import upload_fail, upload_success
+
+@main.route('/files/<filename>')
+def uploaded_files(filename):
+    path = current_app.config['UPLOADED_PATH'] 
+    return send_from_directory(path, filename)
+
+@main.route('/upload', methods=['POST'])
+@login_required
+def upload():
+    f = request.files.get('upload')
+    extension = f.filename.split('.')[1].lower()
+    if extension not in ['jpg', 'gif', 'png', 'jpeg']:
+        return upload_fail(message='请上传图片!')
+    filename = current_user.username+str(datetime.now().strftime("%Y%m%d%H%M%S"))+str(random.randint(100,999))+'.'+extension
+    f.save(os.path.join(current_app.config['UPLOADED_PATH'], filename))
+    url = url_for('main.uploaded_files', filename=filename)
+    return upload_success(url=url)
 
 @main.route('/edit/<int:id>',methods=['GET','POST'])
 @login_required

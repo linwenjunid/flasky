@@ -4,9 +4,10 @@ from wtforms.validators import Length,Email,Regexp,DataRequired
 from wtforms import ValidationError
 from ..models import Role,User
 from flask_pagedown.fields import PageDownField
+from flask_ckeditor import CKEditorField
 
 class PostForm(FlaskForm):
-    body=PageDownField("内容",validators=[DataRequired()])
+    body=CKEditorField("",validators=[DataRequired('内容不能为空！')])
     submit = SubmitField('发布')
 
 class NameForm(FlaskForm):
