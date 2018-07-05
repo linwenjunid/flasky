@@ -23,7 +23,7 @@ def uploaded_files(filename):
 @login_required
 def upload():
     f = request.files.get('upload')
-    extension = f.filename.split('.')[1].lower()
+    extension = f.filename.split('.')[-1].lower()
     if extension not in ['jpg', 'gif', 'png', 'jpeg']:
         return upload_fail(message='请上传图片!')
     filename = current_user.username+str(datetime.now().strftime("%Y%m%d%H%M%S"))+str(random.randint(100,999))+'.'+extension
