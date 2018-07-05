@@ -1,4 +1,4 @@
-from flask import render_template,redirect,session,url_for,flash,current_app,request
+from flask import render_template,redirect,session,url_for,flash,current_app,request,abort
 from datetime import datetime
 from flask_login import login_required,current_user
 
@@ -8,6 +8,28 @@ from .. import db
 from ..models import User,Permission,Role,Post
 from ..email import send_email
 from ..decorators import admin_required,permission_required
+
+@main.route('/edit/<int:id>',methods=['GET','POST'])
+@login_required
+def edit(id):
+    post=Post.query.get_or_404(id)
+    if current_user != post.author and not current_user.can(Permission.ADMIN):
+        abort(403)
+    form = PostForm()
+    if form.validate_on_submit():
+        post.body = form.body.data
+        db.session.add(post)
+        db.session.commit()
+        flash('博客已经更新.')
+        return redirect(url_for('main.post', id=post.id))
+    form.body.data = post.body
+    return render_template('edit_post.html', form=form,post=post)
+
+
+@main.route('/post/<int:id>')
+def post(id):
+    post=Post.query.get_or_404(id)
+    return render_template('post.html',posts=[post])
 
 @main.route('/',methods=['GET','POST'])
 def index():

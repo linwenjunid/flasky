@@ -7,11 +7,26 @@
 <p>时间:{{ moment(current_time).fromNow(refresh=True) }}</p>
 <p>时间:{{ moment().calendar() }}.</p>
 -->
-<div>
-    {% if current_user.can(Permission.WRITE) %}
-    {{ wtf.quick_form(form) }}
-    {% endif %}
-</div>
+{% if current_user.can(Permission.WRITE) %}
+    <div class="edit_article">
+    <form action="" method="post" class="form" role="form">
+         {{ form.hidden_tag() }}
+        <div class="form-group">
+            <div class="row">
+            <div class="col-md-12">
+                {{ form.body(only_input=True, class="form-control", rows=10, placeholder=form.body.label.text) }}
+            </div>
+            <div class="col-md-12">
+                {{ form.body(only_preview=True) }}
+            </div>
+            </div>
+        </div>
+        <div class="form-group">
+             {{ form.submit(class="btn btn-default") }}
+         </div>
+    </form>
+    </div>
+{% endif %}
 {% include '_posts.html' %}
 {% if pagination %}
 <div class="pagination">
