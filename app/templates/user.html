@@ -10,23 +10,37 @@
     <div class="profile-header">
     <h1>{{user.username}}</h1>
     {% if user.name or user.location %}
-        <p>
-        姓名：{% if user.name  %}{{user.name }} {% endif %}
-        地址：{% if user.location  %}{{user.location }} {% endif %}
-        </p>
+        <p>姓名：{% if user.name  %}{{user.name }} {% endif %}</p>
+        <p>地址：{% if user.location  %}{{user.location }} {% endif %}</p>
     {% endif %}
     {% if user.name or user.location %}
         <p>{{user.about_me}}</p>
     {% endif %}
     <p>注册时间： {{ moment(user.member_since).format('L') }}. 最后一次访问时间： {{ moment(user.last_seen).fromNow(refresh=True) }}.</p>
-    <p>
+
+    <div class="btn-group">
+    {% if current_user.can(Permission.FOLLOW) and user != current_user %}
+        {% if not current_user.is_following(user) %}
+        <a class="btn btn-primary" href="{{ url_for('main.follow',username=user.username) }}">关注</a>
+        {% else %}
+        <a class="btn btn-default" href="{{ url_for('main.unfollow',username=user.username) }}">取消关注</a>
+        {% endif %}
+    {% endif %}
+    
+    <a class="btn btn-default" href="#">粉丝:<span class="badge">{{user.followers.count()}}</span></a>
+    <a class="btn btn-default" href="#">关注:<span class="badge">{{user.followed.count()}}</span></a>
+    
+    {% if current_user.is_authenticated and current_user!=user and user.is_following(current_user) %}
+        <a class="btn btn-default" href="#"><span class="label label-default">关注你</span></a>
+    {% endif %}
+    
     {% if user == current_user %}
         <a class="btn btn-default" href="{{ url_for('main.editprofile') }}">资料编辑</a>
     {% endif %}
     {% if current_user.is_administrator() %}
         <a class="btn btn-danger" href="{{ url_for('main.editprofileadmin', id=user.id) }}">资料编辑【管理员】</a>
     {% endif %}
-    </p>
+    </div>
     </div>
 </div>
 {% include '_posts.html' %}

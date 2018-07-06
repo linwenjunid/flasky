@@ -119,6 +119,36 @@ def editprofileadmin(id):
     form.about_me.data  = user.about_me       
     return render_template('editprofile.html',form=form,user=user)
 
+@main.route('/follow/<username>')
+@login_required
+@permission_required(Permission.FOLLOW)
+def follow(username):
+    user=User.query.filter_by(username=username).first()
+    if user is None:
+        flash('无效用户')
+        return redirect(url_for('main.index'))
+    if current_user.is_following(user):
+        flash('你已经关注这个用户')
+        return redirect(url_for('main.user',username=username))
+    current_user.follow(user)
+    flash('你关注了%s.'%username)
+    return redirect(url_for('main.user',username=username))
+
+@main.route('/unfollow/<username>')
+@login_required
+@permission_required(Permission.FOLLOW)
+def unfollow(username):
+    user=User.query.filter_by(username=username).first()
+    if user is None:
+        flash('无效用户')
+        return redirect(url_for('main.index'))
+    if not current_user.is_following(user):
+        flash('你没有关注%s'%username)
+        return redirect(url_for('main.user',username=username))
+    current_user.unfollow(user)
+    flash('你取消了对%s的关注.'%username)
+    return redirect(url_for('main.user',username=username))
+
 @main.route('/admin')
 @login_required
 @admin_required
