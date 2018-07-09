@@ -1,14 +1,14 @@
 import os
 import random
 
-from flask import render_template,redirect,session,url_for,flash,current_app,request,abort,send_from_directory
+from flask import render_template,redirect,session,url_for,flash,current_app,request,abort,send_from_directory,make_response
 from datetime import datetime
 from flask_login import login_required,current_user
 
 from . import main
 from .forms import NameForm,EditProfileForm,EditProfileAdminForm,PostForm
 from .. import db
-from ..models import User,Permission,Role,Post
+from ..models import User,Permission,Role,Post,Follow
 from ..email import send_email
 from ..decorators import admin_required,permission_required
 
@@ -60,12 +60,34 @@ def index():
         post=Post(body=form.body.data,author=current_user._get_current_object())
         db.session.add(post)
         return redirect(url_for('main.index'))
+    show_followed = False
+    if current_user.is_authenticated:
+        show_followed = bool(request.cookies.get('show_followed', ''))
+    if show_followed:
+        query = current_user.followed_posts
+    else:
+        query = Post.query
     page=request.args.get('page',1,type=int)
-    pagination=Post.query.order_by(Post.timestamp.desc()).paginate(page,
-                                                                   per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
-                                                                   error_out=False)
+    pagination=query.order_by(Post.timestamp.desc()).paginate(page,
+                                                              per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+                                                              error_out=False)
     posts=pagination.items
-    return render_template('index.html',form=form,posts=posts,current_time=datetime.utcnow(),pagination=pagination)
+    return render_template('index.html',form=form,posts=posts,show_followed=show_followed,current_time=datetime.utcnow(),pagination=pagination)
+
+@main.route('/all')
+@login_required
+def show_all():
+    resp = make_response(redirect(url_for('main.index')))
+    resp.set_cookie('show_followed', '', max_age=30*24*60*60)
+    return resp
+
+@main.route('/followed')
+@login_required
+def show_followed():
+    resp = make_response(redirect(url_for('main.index')))
+    resp.set_cookie('show_followed', '1', max_age=30*24*60*60)
+    return resp
+
 
 @main.route('/user/<username>')
 def user(username):
@@ -156,7 +178,7 @@ def followers(username):
         flash('无效用户.')
         return redirect(url_for('main.index'))
     page = request.args.get('page', 1, type=int)
-    pagination = user.followers.paginate(
+    pagination = user.followers.filter(Follow.follower_id!=user.id).paginate(
         page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
         error_out=False)
     follows = [{'id':pagination.items.index(item)+1, 'user': item.follower, 'timestamp': item.timestamp}
@@ -172,7 +194,7 @@ def followed_by(username):
         flash('无效用户.')
         return redirect(url_for('main.index'))
     page = request.args.get('page', 1, type=int)
-    pagination = user.followed.paginate(
+    pagination = user.followed.filter(Follow.followed_id!=user.id).paginate(
         page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
         error_out=False)
     follows = [{'id':pagination.items.index(item)+1, 'user': item.followed, 'timestamp': item.timestamp}

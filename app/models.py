@@ -139,6 +139,7 @@ class User(UserMixin,db.Model):
 
     def __init__(self,**kwargs):
         super(User,self).__init__(**kwargs)
+        self.follow(self)
         if self.role is None:
             if self.email==current_app.config['FLASKY_ADMIN']:
                 self.role=Role.query.filter_by(name='Administrator').first()
@@ -240,6 +241,29 @@ class User(UserMixin,db.Model):
                 db.session.commit()
             except :
                 db.session.rollback()
+
+    @property
+    def followed_posts(self):
+        return Post.query.join(Follow, Follow.followed_id==Post.author_id).filter(Follow.follower_id==self.id)
+    
+    @staticmethod
+    #初始化关注记录
+    def init_follows():
+        from random import randint
+        user_count=User.query.count()
+        for user in User.query.all():
+            if not user.is_following(user):
+                user.follow(user)
+                db.session.add(user)
+            followed = randint(0,10)
+            i=0
+            while  i<followed:
+                u=User.query.offset(randint(0,user_count-1)).first()
+                if not user.is_following(u):
+                    user.follow(u)
+                db.session.add(user)
+                i+=1
+        db.session.commit()
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self,permissions):
