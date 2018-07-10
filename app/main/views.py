@@ -243,11 +243,16 @@ def moderate_status(id):
     return redirect(url_for('main.moderate',
                             page=request.args.get('page', 1, type=int)))
 
-@main.route('/admin')
+@main.route('/useradmin')
 @login_required
 @admin_required
-def admin():
-    return render_template('admin.html')
+def useradmin():
+    page = request.args.get('page', 1, type=int)
+    pagination = User.query.order_by(User.member_since.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_USER_PER_PAGE'],
+        error_out=False)
+    users = pagination.items 
+    return render_template('useradmin.html',users=users,pagination=pagination)
 
 @main.route('/moder')
 @login_required
