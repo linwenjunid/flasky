@@ -1,0 +1,29 @@
+{% for comment in comments %}
+{% if moderate or not comment.disabled %}
+<div class="row clearfix" style="border-style:solid;border-width:1px;border-color:#D8D8D8;padding:20px;margin:2px;">
+
+<div class="col-md-6 column" style="border-bottom-style:solid;padding-bottom:10px;border-width:1px;border-color:#D8D8D8;">
+<a href="{{ url_for('main.user',username=comment.author.username) }}">{{comment.author.username}}</a>
+</div>
+<div class="col-md-6 column text-right" style="border-bottom-style:solid;padding-bottom:10px;border-width:1px;border-color:#D8D8D8;">
+{{ moment(comment.timestamp).fromNow() }}
+</div>
+
+<div class="col-md-12 column" style="padding-top:25px;padding-bottom:25px;">
+{{ comment.body | safe }}
+</div>
+
+{% if moderate %}
+<div class="col-md-1 column">
+{% if comment.disabled %}
+<a class="btn btn-default btn-xs" href="{{ url_for('main.moderate_status', id=comment.id, page=page) }}">Enable</a>
+{% else %}
+<a class="btn btn-danger btn-xs" href="{{ url_for('main.moderate_status', id=comment.id, page=page) }}">Disable</a>
+{% endif %}
+</div>
+{% endif %}
+
+</div>
+{% endif %}
+<br>
+{% endfor %}

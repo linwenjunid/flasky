@@ -1,14 +1,15 @@
 import os
 import random
+import math
 
 from flask import render_template,redirect,session,url_for,flash,current_app,request,abort,send_from_directory,make_response
 from datetime import datetime
 from flask_login import login_required,current_user
 
 from . import main
-from .forms import NameForm,EditProfileForm,EditProfileAdminForm,PostForm
+from .forms import NameForm,EditProfileForm,EditProfileAdminForm,PostForm,CommentForm
 from .. import db
-from ..models import User,Permission,Role,Post,Follow
+from ..models import User,Permission,Role,Post,Follow,Comment
 from ..email import send_email
 from ..decorators import admin_required,permission_required
 
@@ -48,10 +49,26 @@ def edit(id):
     return render_template('edit_post.html', form=form,post=post)
 
 
-@main.route('/post/<int:id>')
+@main.route('/post/<int:id>', methods=['GET', 'POST'])
 def post(id):
     post=Post.query.get_or_404(id)
-    return render_template('post.html',posts=[post])
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment = Comment(body=form.body.data,post=post,author=current_user._get_current_object())
+        db.session.add(comment)
+        db.session.commit()
+        flash('评论发表成功！')
+        return redirect(url_for('main.post', id=post.id, page=-1))
+
+    page = request.args.get('page', 1, type=int)
+    if page==-1:
+        page = math.ceil(post.comments.filter(Comment.disabled==False).count()/current_app.config['FLASKY_COMMENTS_PER_PAGE'])
+    pagination = post.comments.filter(Comment.disabled==False).order_by(Comment.timestamp.asc()).paginate(page,
+                                                                          per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],
+                                                                          error_out=False)
+    comments = pagination.items
+
+    return render_template('post.html',posts=[post], form=form, comments=comments, pagination=pagination)
 
 @main.route('/',methods=['GET','POST'])
 def index():
@@ -203,6 +220,28 @@ def followed_by(username):
                            endpoint='main.followed_by', pagination=pagination,
                            follows=follows)
 
+@main.route('/moderate')
+@login_required
+@permission_required(Permission.MODERATE)
+def moderate():
+    page = request.args.get('page', 1, type=int)
+    pagination = Comment.query.order_by(Comment.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],
+        error_out=False)
+    comments = pagination.items
+    return render_template('moderate.html', comments=comments,
+                           pagination=pagination, page=page)
+
+@main.route('/moderate/status/<int:id>')
+@login_required
+@permission_required(Permission.MODERATE)
+def moderate_status(id):
+    comment = Comment.query.get_or_404(id)
+    comment.disabled = not comment.disabled
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for('main.moderate',
+                            page=request.args.get('page', 1, type=int)))
 
 @main.route('/admin')
 @login_required

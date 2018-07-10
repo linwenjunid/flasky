@@ -15,6 +15,11 @@ class Post(db.Model):
     body_html = db.Column(db.Text)
     timestamp=db.Column(db.DateTime(),index=True,default=datetime.utcnow)
     author_id=db.Column(db.Integer,db.ForeignKey('users.id'))
+
+    comments = db.relationship('Comment', backref='post', lazy='dynamic')
+
+    def get_enable_comments_count(self):
+        return self.comments.filter(Comment.disabled==False).count()
     
     @staticmethod
     def generate_fake(count=100):
@@ -30,7 +35,29 @@ class Post(db.Model):
                    author=u)
             db.session.add(p)
             db.session.commit()
-    
+
+    @staticmethod
+    def init_comment():
+        from random import seed,randint
+        import forgery_py
+
+        seed()
+        user_count=User.query.count()
+        for post in Post.query.all():
+            seed()
+            followed = randint(0,50)
+            i=0
+            while  i<followed:
+                u=User.query.offset(randint(0,user_count-1)).first()
+                p=Comment(body=forgery_py.lorem_ipsum.sentences(randint(1,3)),
+                          timestamp=forgery_py.date.date(True),
+                          author=u,
+                          disabled = False,
+                          post=post)
+                db.session.add(p)
+                i+=1
+        db.session.commit()
+
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
@@ -116,7 +143,9 @@ class User(UserMixin,db.Model):
                                 backref=db.backref('followed',lazy='joined'),
                                 lazy='dynamic',
                                 cascade='all,delete-orphan')
-    
+    comments = db.relationship('Comment', backref='author', lazy='dynamic')
+        
+
     def is_following(self,user):
         return self.followed.filter_by(followed_id=user.id).first() is not None  
 
@@ -264,6 +293,15 @@ class User(UserMixin,db.Model):
                 db.session.add(user)
                 i+=1
         db.session.commit()
+
+class Comment(db.Model):
+    __tablename__ = 'comments'
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    disabled = db.Column(db.Boolean)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self,permissions):

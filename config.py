@@ -14,6 +14,7 @@ class Config:
     #分页每页显示记录数
     FLASKY_POSTS_PER_PAGE=10
     FLASKY_FOLLOWERS_PER_PAGE=10
+    FLASKY_COMMENTS_PER_PAGE=10
     #ckeditor引入本地资源
     CKEDITOR_SERVE_LOCAL=True
     #ckeditor代码高亮

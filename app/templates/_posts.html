@@ -24,6 +24,9 @@
       <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-justify"></em>
       <a href="{{ url_for('main.post', id=post.id) }}"><span class="label label-default">链接</span></a>
       </button>
+      <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-justify"></em>
+      <a href="{{ url_for('main.post', id=post.id) }}#comments">评论<span class="badge">{{post.get_enable_comments_count()}}</span></a>
+      </button>
     </div>
     </div>
   </div>

@@ -6,9 +6,13 @@ from ..models import Role,User
 from flask_pagedown.fields import PageDownField
 from flask_ckeditor import CKEditorField
 
+class CommentForm(FlaskForm):
+    body = StringField('', validators=[DataRequired('内容不能为空！')])
+    submit = SubmitField('发布评论')
+
 class PostForm(FlaskForm):
-    body=CKEditorField("",validators=[DataRequired('内容不能为空！')])
-    submit = SubmitField('发布')
+    body=CKEditorField('',validators=[DataRequired('内容不能为空！')])
+    submit = SubmitField('发布文章')
 
 class NameForm(FlaskForm):
     name = StringField('What is your name?',validators=[DataRequired()])

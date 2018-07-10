@@ -27,8 +27,8 @@
         {% endif %}
     {% endif %}
     
-    <a class="btn btn-default" href="{{ url_for('main.followers',username=user.username) }}">粉丝:<span class="badge">{{user.followers.count()-1}}</span></a>
-    <a class="btn btn-default" href="{{ url_for('main.followed_by',username=user.username) }}">关注:<span class="badge">{{user.followed.count()-1}}</span></a>
+    <a class="btn btn-default" href="{{ url_for('main.followers',username=user.username) }}">粉丝<span class="badge">{{user.followers.count()-1}}</span></a>
+    <a class="btn btn-default" href="{{ url_for('main.followed_by',username=user.username) }}">关注<span class="badge">{{user.followed.count()-1}}</span></a>
     
     {% if current_user.is_authenticated and current_user!=user and user.is_following(current_user) %}
         <a class="btn btn-default" href="#"><span class="label label-default">关注你</span></a>
