@@ -1,11 +1,12 @@
 from . import db 
-from flask import current_app
+from flask import current_app, url_for
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin,AnonymousUserMixin
 from . import login_manager
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from datetime import datetime
 from markdown import markdown
+from app.exceptions import ValidationError
 import bleach
 
 class Post(db.Model):
@@ -17,6 +18,24 @@ class Post(db.Model):
     author_id=db.Column(db.Integer,db.ForeignKey('users.id'))
 
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
+
+    def to_json(self):
+        json_post={
+            'url': url_for('api.get_post', id=self.id),
+            'body': self.body,
+            'timestamp': self.timestamp,
+            'author_url': url_for('api.get_user', id=self.author_id),
+            'comments_url': url_for('api.get_post_comments', id=self.id),
+            'comment_count': self.comments.count()
+        }
+        return json_post
+
+    @staticmethod
+    def from_json(json_post):
+        body = json_post.get('body')
+        if body is None or body == '':
+            raise ValidationError('不能保存空文章！')
+        return Post(body=body)
 
     def get_enable_comments_count(self):
         return self.comments.filter(Comment.disabled==False).count()
@@ -144,7 +163,31 @@ class User(UserMixin,db.Model):
                                 lazy='dynamic',
                                 cascade='all,delete-orphan')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
-        
+
+    def to_json(self):
+        json_user = {
+            'url': url_for('api.get_user', id=self.id),
+            'username': self.username,
+            'member_since': self.member_since,
+            'last_seen': self.last_seen,
+            'posts_url': url_for('api.get_user_posts', id=self.id),
+            'post_count': self.posts.count()
+        }
+        return json_user
+    
+    #获取API接口的密钥令牌 
+    def generate_auth_token(self,expiration):
+        s=Serializer(current_app.config['SECRET_KEY'],expires_in=expiration)
+        return s.dumps({'id':self.id}).decode('utf-8')
+
+    #接收一个密钥令牌并解析返回对应用户
+    def verify_auth_token(token):
+        s=Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data=s.loads(token)
+        except:
+            return None
+        return User.query.get(data['id'])
 
     def is_following(self,user):
         return self.followed.filter_by(followed_id=user.id).first() is not None  
@@ -302,6 +345,23 @@ class Comment(db.Model):
     disabled = db.Column(db.Boolean)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+
+    def to_json(self):
+        json_comment = {
+            'url': url_for('api.get_comment', id=self.id),
+            'post_url': url_for('api.get_post', id=self.post_id),
+            'body': self.body,
+            'timestamp': self.timestamp,
+            'author_url': url_for('api.get_user', id=self.author_id),
+        }
+        return json_comment
+
+    @staticmethod
+    def from_json(json_comment):
+        body = json_comment.get('body')
+        if body is None or body == '':
+            raise ValidationError('评论不能为空！')
+        return Comment(body=body)
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self,permissions):

@@ -33,7 +33,7 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('main.user',username=current_user.username) }}">首页</a></li>
+                <li><a href="{{ url_for('main.user',username=current_user.username) }}">寒舍</a></li>
                 {% endif %}
                 {% if current_user.can(Permission.MODERATE) %}
                 <li><a href="{{ url_for('main.moderate') }}">评论管理</a></li>
