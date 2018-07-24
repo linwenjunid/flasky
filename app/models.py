@@ -15,7 +15,7 @@ class Warnsql(db.Model):
     timestamp=db.Column(db.DateTime(),index=True,default=datetime.utcnow)
     sql_statement=db.Column(db.Text())
     sql_parameters=db.Column(db.Text())
-    sql_duration=db.Column(db.Integer)
+    sql_duration=db.Column(db.Float())
     sql_context=db.Column(db.Text())
 
 class Post(db.Model):

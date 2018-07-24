@@ -21,9 +21,13 @@ from flask_sqlalchemy import get_debug_queries
 def after_request(response):
     for query in get_debug_queries():
         if query.duration>=current_app.config['FLASKY_DB_QUERY_TIMEOUT']:
-            current_app.logger.info('检测到异常SQL,详情查看异常SQL表:warnsqls')
-            sql=Warnsql(sql_statement=query.statement,sql_parameters=query.parameters,sql_duration=query.duration,sql_context=query.context)
-            db.session.add(sql)
+            current_app.logger.info('检测到异常SQL,详情查看表warnsqls。')
+            wsql=Warnsql()
+            wsql.sql_statement=query.statement
+            wsql.sql_parameters=str(query.parameters)
+            wsql.sql_duration=query.duration
+            wsql.sql_context=query.context
+            db.session.add(wsql)
             db.session.commit()
     return response
 
