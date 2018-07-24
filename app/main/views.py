@@ -9,11 +9,23 @@ from flask_login import login_required,current_user
 from . import main
 from .forms import NameForm,EditProfileForm,EditProfileAdminForm,PostForm,CommentForm
 from .. import db
-from ..models import User,Permission,Role,Post,Follow,Comment
+from ..models import User,Permission,Role,Post,Follow,Comment,Warnsql
 from ..email import send_email
 from ..decorators import admin_required,permission_required
 
 from flask_ckeditor import upload_fail, upload_success
+
+from flask_sqlalchemy import get_debug_queries
+
+@main.after_app_request
+def after_request(response):
+    for query in get_debug_queries():
+        if query.duration>=current_app.config['FLASKY_DB_QUERY_TIMEOUT']:
+            current_app.logger.info('检测到异常SQL,详情查看异常SQL表:warnsqls')
+            sql=Warnsql(sql_statement=query.statement,sql_parameters=query.parameters,sql_duration=query.duration,sql_context=query.context)
+            db.session.add(sql)
+            db.session.commit()
+    return response
 
 @main.route('/files/<filename>')
 def uploaded_files(filename):

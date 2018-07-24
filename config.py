@@ -1,4 +1,6 @@
 import os
+import logging
+import logging.handlers
 
 class Config:
     '''
@@ -26,9 +28,19 @@ class Config:
     UPLOADED_PATH=os.path.join(os.path.abspath(os.path.dirname(__file__)), 'uploads')
     #UPLOADED_PATH='/uploads'
 
+    #缓慢查询监控
+    SQLALCHEMY_RECORD_QUERIES=True
+    FLASKY_DB_QUERY_TIMEOUT=0.1
+
     @staticmethod
     def init_app(app):
-        pass
+        
+        myformat = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)s - %(message)s')
+        handler=logging.handlers.TimedRotatingFileHandler("log/nohup.out",when='M',interval=1,backupCount=10,encoding='UTF-8')
+        handler.suffix="%Y%m%d-%H%M.log"
+        handler.setLevel(logging.DEBUG)
+        handler.setFormatter(myformat)
+        app.logger.addHandler(handler)
 
 class DeveConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEVE_SQLURL')

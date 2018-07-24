@@ -9,6 +9,15 @@ from markdown import markdown
 from app.exceptions import ValidationError
 import bleach
 
+class Warnsql(db.Model):
+    __tablename__='warnsqls'
+    id=db.Column(db.Integer,primary_key=True)
+    timestamp=db.Column(db.DateTime(),index=True,default=datetime.utcnow)
+    sql_statement=db.Column(db.Text())
+    sql_parameters=db.Column(db.Text())
+    sql_duration=db.Column(db.Integer)
+    sql_context=db.Column(db.Text())
+
 class Post(db.Model):
     __tablename__='posts'
     id=db.Column(db.Integer,primary_key=True)
