@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}广场 - 作业管理{% endblock %}
+
+{% block page_content %}
+
+<div class="page-header">
+    <h1>作业管理</h1>
+</div>
+
+
+<table class="table table-hover followers">
+    <thead><tr><th>作业名</th><th>最后一次运行时间</th><th>操作</th></tr></thead>
+    {% for job in jobs %}
+    <tr {%if loop.index%2!=1 %}class="success"{%endif%}>
+    <td>
+    <a href="#"> {{ job.jobname }} </a>
+    </td>
+    <td>{{ moment(job.last_timestamp).format('L') }}</td>
+    <td>
+    <a href="#"> 启用 </a>
+    </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination,'jobtool.joblist') }}
+</div>
+{% endif %}
+
+{% endblock %}
+

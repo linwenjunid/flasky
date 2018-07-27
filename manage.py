@@ -8,6 +8,17 @@ from flask_migrate import Migrate,MigrateCommand,upgrade
 
 app=create_app(os.getenv('FLASK_CONFIG') or 'default')
 
+#任务调度
+#from flask_apscheduler import APScheduler
+#scheduler=APScheduler()
+#scheduler.init_app(app)
+#scheduler.start()
+
+def runjob():
+    with app.app_context():
+        from app.models_job import Job
+        print('作业数:'+str(Job.query.count()))
+
 manager=Manager(app)
 migrate = Migrate(app,db)
 

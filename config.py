@@ -32,9 +32,12 @@ class Config:
     SQLALCHEMY_RECORD_QUERIES=True
     FLASKY_DB_QUERY_TIMEOUT=0.5
 
+    #作业工具参数
+    FLASKY_JOB_PER_PAGE=10
+
     @staticmethod
     def init_app(app):
-        
+        #日志处理 
         myformat = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)s - %(message)s')
         handler=logging.handlers.TimedRotatingFileHandler("log/nohup.out",when='M',interval=1,backupCount=10,encoding='UTF-8')
         handler.suffix="%Y%m%d-%H%M.log"
