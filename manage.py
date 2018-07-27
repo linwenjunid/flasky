@@ -5,6 +5,7 @@ from app import create_app,db
 from app.models import User,Role,Post,Follow,Comment
 from flask_script import Manager,Shell
 from flask_migrate import Migrate,MigrateCommand,upgrade
+from flask import current_app
 
 app=create_app(os.getenv('FLASK_CONFIG') or 'default')
 
@@ -17,7 +18,7 @@ app=create_app(os.getenv('FLASK_CONFIG') or 'default')
 def runjob():
     with app.app_context():
         from app.models_job import Job
-        print('作业数:'+str(Job.query.count()))
+        current_app.logger.info('作业数:'+str(Job.query.count()))
 
 manager=Manager(app)
 migrate = Migrate(app,db)

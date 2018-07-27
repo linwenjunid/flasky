@@ -20,7 +20,9 @@
     </td>
     <td>{{ moment(job.last_timestamp).format('L') }}</td>
     <td>
+    <a href="{{ url_for('jobtool.addjob') }}"> 添加 </a>
     <a href="#"> 启用 </a>
+    <a href="#"> 删除 </a>
     </td>
     </tr>
     {% endfor %}
