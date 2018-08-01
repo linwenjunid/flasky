@@ -44,7 +44,9 @@
                 {% if current_user.can(Permission.ADMIN) %}
                 <li><a href="{{ url_for('jobtool.joblist') }}">作业管理</a></li>
                 {% endif %}
+                {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('mathtool.listpaper') }}">测试</a></li>
+                {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
               {% if current_user.is_authenticated %}
