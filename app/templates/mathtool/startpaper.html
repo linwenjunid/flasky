@@ -12,7 +12,7 @@
 <form action="" method="post">
     {{form.hidden_tag()}}
     <div class="input-group input-group-lg">
-    {% if q.a!=None  %}<span class="input-group-addon">{{q.a}}</span>{% else %}
+    {% if q.a!=None  %}<span class="input-group-addon">{{"%g"%q.a}}</span>{% else %}
     <span class="input-group-addon">{{form.result}}</span>
     {% endif %}
     <span class="input-group-addon">
@@ -22,11 +22,11 @@
       {% elif q.op==4 %}/
       {%endif%}
     </span>
-    {% if q.b!=None %}<span class="input-group-addon">{{q.b}}</span>{% else %}
+    {% if q.b!=None %}<span class="input-group-addon">{{"%g"%q.b}}</span>{% else %}
     <span class="input-group-addon">{{form.result}}</span>
     {% endif %}
     <span class="input-group-addon">=</span>
-    {% if q.val!=None %}<span class="input-group-addon">{{q.val}}</span>{% else %}
+    {% if q.val!=None %}<span class="input-group-addon">{{"%g"%q.val}}</span>{% else %}
     <span class="input-group-addon">{{form.result}}</span>
     {% endif %}
     <span class="input-group-addon">{{form.submit}}</span>
