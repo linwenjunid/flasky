@@ -35,6 +35,9 @@ class Config:
     #作业工具参数
     FLASKY_JOB_PER_PAGE=10
 
+    #数学测试
+    FLASKY_PAPER_PER_PAGE=10
+
     @staticmethod
     def init_app(app):
         #日志处理 

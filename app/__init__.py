@@ -48,4 +48,7 @@ def create_app(config_name):
 
     from .jobtool import jobtool as jobtool_blueprint
     app.register_blueprint(jobtool_blueprint,url_prefix='/jobtool')
+    
+    from .mathtool import mathtool as math_blueprint
+    app.register_blueprint(math_blueprint,url_prefix='/mathtool')
     return app

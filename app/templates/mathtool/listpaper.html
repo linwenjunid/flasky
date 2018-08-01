@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}广场 - 测试{% endblock %}
+
+{% block page_content %}
+
+<div class="page-header">
+    <h1>测试</h1>
+</div>
+
+<div class="btn-group"><a class="btn btn-primary" href="{{ url_for('mathtool.newpaper') }}">生成测试</a></div>
+
+<table class="table table-hover followers">
+    <thead><tr><th>编号</th><th>生成时间</th><th>备注</th><th>成绩</th><th>操作</th></tr></thead>
+    {% for paper in papers %}
+    <tr {%if loop.index%2!=1 %}class="success"{%endif%}>
+    <td>
+    <a href="#"> {{ paper.id }} </a>
+    </td>
+    <td>{{ moment(paper.timestamp).format('YYYY-MM-DD HH:mm:ss') }}</td>
+    <td>{{ paper.q_args}}</td>
+    <td>{{ paper.score}}</td>
+    <td>
+    {% if not paper.score_flag %}
+    <a href="{{url_for('mathtool.startpaper',pid=paper.id,qid=0)}}"> 开始 </a>
+    {% endif %}
+    <a href="{{url_for('mathtool.listquestion',id=paper.id)}}"> 详情 </a>
+    {% if current_user.can(Permission.ADMIN) %}
+    <a href="{{url_for('mathtool.delpaper',id=paper.id,page=page)}}"> 删除 </a>
+    {% endif %}
+    </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination,'mathtool.listpaper') }}
+</div>
+{% endif %}
+
+{% endblock %}
+

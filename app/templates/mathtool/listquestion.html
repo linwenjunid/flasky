@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}广场 - 清单{% endblock %}
+
+{% block page_content %}
+
+<h3 class="text-left col-md-6">时间：{{paper.timestamp}}</h3>
+<h3 class="text-right col-md-6">成绩：{{paper.score}}</h3>
+<table class="table table-hover followers">
+{% for q in questions %}
+<tr>
+<td class="{%if not q.a %}alert alert-info{% endif %}">
+{% if q.a %}{{q.a}}{% else %}
+<span class="{%if q.key!=q.result %}text-danger{% endif %}"><b>{{q.result}}<b></span>
+{% endif %}
+</td>
+<td>
+{% if q.op==1   %}
+<span class="glyphicon glyphicon-plus"></span>
+{% elif q.op==2 %}
+<span class="glyphicon glyphicon-minus"></span>
+{% elif q.op==3 %}<b>*</b>
+{% elif q.op==4 %}<b>/</b>
+{%endif%}
+</td>
+<td class="{%if not q.b %}alert alert-info{% endif %}">
+{% if q.b %}{{q.b}}{% else %}
+<span {%if q.key!=q.result %}class="text-danger" {% endif %}><b>{{q.result}}<b></span>
+{% endif %}
+</td>
+<td><b>=</b></td>
+<td class="{%if not q.val %}alert alert-info{% endif %}">
+{% if q.val %}{{q.val}}{% else %}
+<span {%if q.key!=q.result %}class="text-danger" {% endif %}><b>{{q.result}}<b></span>
+{% endif %}
+</td>
+<td>{% if q.key==q.result %}<span class="glyphicon glyphicon-ok"></span>{%else%}<span class="glyphicon glyphicon-remove"></span>{%endif%}</td>
+</tr>
+{% endfor %}
+</table>
+<div class="text-center"><a class="btn btn-primary" href="{{ url_for('mathtool.listpaper') }}">返回</a></div>
+{% endblock %}
+

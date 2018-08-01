@@ -8,6 +8,7 @@ from datetime import datetime
 from markdown import markdown
 from app.exceptions import ValidationError
 import bleach
+from app.models_math import Math_paper
 
 class Warnsql(db.Model):
     __tablename__='warnsqls'
@@ -160,18 +161,19 @@ class User(UserMixin,db.Model):
     member_since=db.Column(db.DateTime(),default=datetime.utcnow)
     last_seen=db.Column(db.DateTime(),default=datetime.utcnow)
 
-    posts     = db.relationship('Post',backref='author',lazy='dynamic')
-    followed  = db.relationship('Follow',
+    posts      = db.relationship('Post',backref='author',lazy='dynamic')
+    math_papers= db.relationship('Math_paper',backref='user',lazy='dynamic')
+    followed   = db.relationship('Follow',
                                 foreign_keys=[Follow.follower_id],
                                 backref=db.backref('follower',lazy='joined'),
                                 lazy='dynamic',
                                 cascade='all,delete-orphan')
-    followers = db.relationship('Follow',
+    followers  = db.relationship('Follow',
                                 foreign_keys=[Follow.followed_id],
                                 backref=db.backref('followed',lazy='joined'),
                                 lazy='dynamic',
                                 cascade='all,delete-orphan')
-    comments = db.relationship('Comment', backref='author', lazy='dynamic')
+    comments   = db.relationship('Comment', backref='author', lazy='dynamic')
 
     def to_json(self):
         json_user = {
