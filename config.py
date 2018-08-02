@@ -1,6 +1,7 @@
 import os
 import logging
 import logging.handlers
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 
 class Config:
     '''
@@ -34,6 +35,8 @@ class Config:
 
     #作业工具参数
     FLASKY_JOB_PER_PAGE=10
+    #SCHEDULER_JOBSTORES = {'default': SQLAlchemyJobStore(url='mysql+pymysql://root:hadoop@192.168.134.201:3306/jobstore?charset=utf8')}
+    #SCHEDULER_API_ENABLED = True
 
     #数学测试
     FLASKY_PAPER_PER_PAGE=10

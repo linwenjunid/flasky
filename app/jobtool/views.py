@@ -26,16 +26,27 @@ def addjob():
         db.session.add(job)
         db.session.commit()
         current_app.logger.info('添加一个启动作业，ID：{}'.format(job.id))
-        scheduler.add_job(func='__main__:runjob',id=str(job.id),trigger=job.trigger,second=job.second)
-        return redirect(url_for('jobtool.joblist'))
+        Job.add_job(job.id)
+        return redirect(url_for('jobtool.listjob'))
     return render_template('jobtool/addjob.html',form=form)
 
-@jobtool.route('/joblist/')
+@jobtool.route('/listjob/')
 @login_required
-def joblist():
+def listjob():
     page = request.args.get('page', 1, type=int)
     pagination = Job.query.order_by(Job.id.desc()).paginate(
         page, per_page=current_app.config['FLASKY_JOB_PER_PAGE'],
         error_out=False)
     jobs = pagination.items
-    return render_template('jobtool/joblist.html', jobs=jobs, pagination=pagination)
+    return render_template('jobtool/listjob.html', jobs=jobs, pagination=pagination)
+
+@jobtool.route('/status/<int:id>')
+@login_required
+def statusjob(id):
+    job=Job.query.filter(Job.id==id).first()
+    if job.is_enable:
+        Job.remove_job(job.id)
+    else :
+        Job.add_job(job.id)
+
+    return redirect(url_for('jobtool.listjob'))

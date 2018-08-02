@@ -34,6 +34,7 @@ def create_app(config_name):
     login_manager.init_app(app)
     pagedown.init_app(app)
     ckeditor.init_app(app)
+
     scheduler.init_app(app)
     scheduler.start()
 

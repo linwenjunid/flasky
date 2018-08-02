@@ -42,7 +42,7 @@
                 <li><a href="{{ url_for('main.useradmin') }}">用户管理</a></li>
                 {% endif %}
                 {% if current_user.can(Permission.ADMIN) %}
-                <li><a href="{{ url_for('jobtool.joblist') }}">作业管理</a></li>
+                <li><a href="{{ url_for('jobtool.listjob') }}">作业管理</a></li>
                 {% endif %}
                 {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('mathtool.listpaper') }}">测试</a></li>
