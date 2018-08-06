@@ -23,7 +23,7 @@
     </td>
     <td>
     <a href="{{ url_for('jobtool.statusjob',id=job.id) }}"> {%if job.is_enable%}禁用{%else%}启用{%endif%} </a>
-    <a href="#"> 删除 </a>
+    <a href="{{ url_for('jobtool.deljob',id=job.id) }}"> 删除 </a>
     </td>
     </tr>
     {% endfor %}

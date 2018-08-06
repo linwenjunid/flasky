@@ -50,3 +50,17 @@ def statusjob(id):
         Job.add_job(job.id)
 
     return redirect(url_for('jobtool.listjob'))
+
+@jobtool.route('/deljob/<int:id>')
+@login_required
+def deljob(id):
+    job=Job.query.filter(Job.id==id).first()
+    if job.is_enable:
+        Job.remove_job(id)
+    db.session.delete(job)
+    db.session.commit()
+    return redirect(url_for('jobtool.listjob'))
+
+
+
+

@@ -33,7 +33,7 @@ class Job(db.Model):
             try:
                 args=[job.id,job.jobname]
                 args=args+job.args.split(",")
-                scheduler.add_job(func='__main__:runjob',
+                scheduler.add_job(func='flasky:runjob',
                               id          = str(job.id),
                               name        = job.jobname,
                               args        = args,
@@ -46,16 +46,20 @@ class Job(db.Model):
                               day_of_week = job.day_of_week,
                               second      = job.second,
                               replace_existing=True)
+                current_app.logger.info("作业%s启动完成。"%id)
                 job.is_enable=True
                 db.session.add(job)
-                db.session.commit()
                 return True
             except ConflictingIdError:
+                job.is_enable=True
+                db.session.add(job)
                 current_app.logger.info("作业%s已经启用。"%id) 
                 return False
             except Exception as e:
                 current_app.logger.info("作业%s启用操作出现异常:"%id+str(e))
                 return False
+            finally:
+                db.session.commit()
         else:
             current_app.logger.info("作业%s不存在。"%id)
             return False
@@ -66,16 +70,19 @@ class Job(db.Model):
         if job:
             try:
                 scheduler.remove_job(str(job.id))
+                current_app.logger.info("作业%s禁用完成。"%id)
                 job.is_enable=False
                 db.session.add(job)
-                db.session.commit()
                 return True
             except JobLookupError:
+                job.is_enable=False
                 current_app.logger.info("作业%s未启用。"%id)
                 return False
             except Exception as e:
                 current_app.logger.info("作业%s禁用操作出现异常:"%id+str(e))
                 return False
+            finally:
+                db.session.commit()
         else:
             current_app.logger.info("作业%s不存在。"%id)
             return False

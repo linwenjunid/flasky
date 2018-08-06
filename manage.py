@@ -8,22 +8,33 @@ from app.models_job import Job
 from flask_script import Manager,Shell
 from flask_migrate import Migrate,MigrateCommand,upgrade
 
-app=create_app(os.getenv('FLASK_CONFIG') or 'default')
-
 def runjob(*args):
     with app.app_context():
         from app.models_job import Job
         job=Job.query.filter(Job.id==args[0]).first()
         app.logger.info("作业编码：%s作业名：%s"%(job.id,job.jobname))
-        job.last_timestamp=datetime.utcnow()
+        job.last_timestamp=datetime.now()
         db.session.add(job)
         db.session.commit()
 
-#初始化启动作业
-with app.app_context():
-    jobs=Job.query.filter(Job.is_enable==True).all()
-    for job in jobs:
-        Job.add_job(job.id)
+app=create_app(os.getenv('FLASK_CONFIG') or 'default')
+
+#文件锁保证任务只初始化一次
+import atexit
+import fcntl
+f = open("scheduler.lock", "wb")
+try:
+    fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    with app.app_context():
+        jobs=Job.query.filter(Job.is_enable==True).all()
+        for job in jobs:
+            Job.add_job(job.id)
+except:
+    pass
+def unlock():
+    fcntl.flock(f, fcntl.LOCK_UN)
+    f.close()
+atexit.register(unlock)
 
 manager=Manager(app)
 migrate = Migrate(app,db)
@@ -47,4 +58,3 @@ def deploy():
 
 if __name__=='__main__':
     manager.run()
-
