@@ -8,6 +8,7 @@ from flask_login import LoginManager
 from flask_pagedown import PageDown
 from flask_ckeditor import CKEditor
 from flask_apscheduler import APScheduler
+from flask_elastic import Elastic
 
 bootstrap=Bootstrap()
 moment=Moment()
@@ -16,6 +17,7 @@ db=SQLAlchemy()
 pagedown=PageDown()
 ckeditor = CKEditor()
 scheduler=APScheduler()
+elastic = Elastic()
 
 login_manager=LoginManager()
 login_manager.session_protection='strong'
@@ -34,6 +36,7 @@ def create_app(config_name):
     login_manager.init_app(app)
     pagedown.init_app(app)
     ckeditor.init_app(app)
+    elastic.init_app(app)
 
     scheduler.init_app(app)
     scheduler.start()

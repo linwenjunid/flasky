@@ -41,6 +41,9 @@ class Config:
     #数学测试
     FLASKY_PAPER_PER_PAGE=10
 
+    #elasticsearch参数
+    ELASTICSEARCH_URL='http://192.168.134.151:9200'
+
     @staticmethod
     def init_app(app):
         #日志处理 

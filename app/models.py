@@ -1,4 +1,5 @@
-from . import db 
+from . import db, elastic
+from sqlalchemy import event
 from flask import current_app, url_for
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin,AnonymousUserMixin
@@ -37,6 +38,16 @@ class Post(db.Model):
             'author_url': url_for('api.get_user', id=self.author_id),
             'comments_url': url_for('api.get_post_comments', id=self.id),
             'comment_count': self.comments.count()
+        }
+        return json_post
+
+    def to_es_json(self):
+        json_post={
+            'id': self.id,
+            'body': self.body,
+            'timestamp': self.timestamp,
+            'author_id': self.author_id,
+            'body_html': self.body_html
         }
         return json_post
 
@@ -87,22 +98,32 @@ class Post(db.Model):
                 i+=1
         db.session.commit()
 
-    @staticmethod
-    def on_changed_body(target, value, oldvalue, initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p', 'span', 'div', 'hr']
-        allowed_attr = ['class', 'id']        
- 
-        target.body_html = bleach.linkify(bleach.clean(
-            markdown(value, output_format='html',extensions=['markdown.extensions.extra','markdown.extensions.codehilite','markdown.extensions.toc']),
-            tags=allowed_tags, attributes=allowed_attr, strip=True))
-        
+#    @staticmethod
+#    def on_changed_body(target, value, oldvalue, initiator):
+#        pass
+        #current_app.logger.info("文章编号："+str(target.id))
+        #allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+        #                'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+        #                'h1', 'h2', 'h3', 'p', 'span', 'div', 'hr']
+        #allowed_attr = ['class', 'id']        
+        #
+        #target.body_html = bleach.linkify(bleach.clean(
+        #    markdown(value, output_format='html',extensions=['markdown.extensions.extra','markdown.extensions.codehilite','markdown.extensions.toc']),
+        #    tags=allowed_tags, attributes=allowed_attr, strip=True))
+        #
         #渲染内容 
         #target.body_html=markdown(value, output_format='html', extensions=['markdown.extensions.extra','markdown.extensions.codehilite','markdown.extensions.toc'])
 
 #注册监听
-db.event.listen(Post.body, 'set', Post.on_changed_body)
+#event.listen(MyBaseMixin, 'before_insert', get_created_by_id, propagate=True)
+#db.event.listen(Post.body, 'set', Post.on_changed_body)
+
+#文章自动添加索引
+@db.event.listens_for(Post, 'after_update')
+@db.event.listens_for(Post, 'after_insert')
+def post_after_update(mapper, connection, target):
+    elastic.index(index='flasky', doc_type='posts', id=target.id, body=target.to_es_json())
+    current_app.logger.info("文章索引："+str(target.id))
 
 class Role(db.Model):
     __tablename__='roles'
