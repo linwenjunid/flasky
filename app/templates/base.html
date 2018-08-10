@@ -48,6 +48,14 @@
                 <li><a href="{{ url_for('mathtool.listpaper') }}">测试</a></li>
                 {% endif %}
             </ul>
+
+            <form class="narbar-form navbar-right" role="search" action="{{url_for('search.search')}}" method="post">
+                <div class="form-group col-xs-9" style="margin-top: 10px;">
+                    {{g.search_form.hidden_tag()}}{{g.search_form.text(class='form-control',placeholder='搜索')}}
+                </div>
+                {{g.search_form.submit(class="btn btn-default col-xs-3",style="margin-top: 10px")}}
+            </form>
+
             <ul class="nav navbar-nav navbar-right">
               {% if current_user.is_authenticated %}
               <li class="dropdown">

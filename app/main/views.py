@@ -2,7 +2,7 @@ import os
 import random
 import math
 
-from flask import render_template,redirect,session,url_for,flash,current_app,request,abort,send_from_directory,make_response
+from flask import render_template,redirect,session,url_for,flash,current_app,request,abort,send_from_directory,make_response, g
 from datetime import datetime
 from flask_login import login_required,current_user
 
@@ -16,6 +16,13 @@ from ..decorators import admin_required,permission_required
 from flask_ckeditor import upload_fail, upload_success
 
 from flask_sqlalchemy import get_debug_queries
+
+from ..search.forms import SearchForm
+
+#全局搜索
+@main.before_app_request
+def before_request():
+    g.search_form = SearchForm()
 
 @main.after_app_request
 def after_request(response):

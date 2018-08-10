@@ -1,0 +1,28 @@
+{% for post in posts %}
+  <div class="row clearfix" style="border-style:solid;border-width:1px;border-color:#D8D8D8;padding:20px;margin:2px;">
+    <div class="col-md-12 column text-right" style="border-bottom-style:solid;padding-bottom:10px;border-width:1px;border-color:#D8D8D8;">
+    {{ post['_source']['timestamp'][0:10] }}
+    </div>
+    
+    <div class="col-md-12 column" style="padding-top:25px;padding-bottom:25px;"> 
+      {{ post['highlight']['body'] | myfilter | safe }}
+    </div>
+    <div class="col-md-12 column text-right">
+    <div class="btn-group">
+      {% if current_user.id == post['_source']['author_id'] %}
+        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-left"></em>
+        <a href="{{ url_for('main.edit', id=post['_id']) }}"><span class="label label-primary">编辑</span></a>
+        </button>
+      {% elif current_user.is_administrator() %}
+        <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-left"></em>
+        <a href="{{ url_for('main.edit', id=post['_id']) }}"><span class="label label-danger">编辑[管理员]</span></a>
+        </button>
+      {% endif %}
+      <button class="btn btn-default" type="button"><em class="glyphicon glyphicon-align-justify"></em>
+      <a href="{{ url_for('main.post', id=post['_id']) }}"><span class="label label-default">链接</span></a>
+      </button>
+    </div>
+    </div>
+  </div>
+  <br>
+{% endfor %}

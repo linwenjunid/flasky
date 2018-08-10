@@ -9,6 +9,7 @@ from flask_pagedown import PageDown
 from flask_ckeditor import CKEditor
 from flask_apscheduler import APScheduler
 from flask_elastic import Elastic
+from .jinjafilters import myfilter
 
 bootstrap=Bootstrap()
 moment=Moment()
@@ -28,6 +29,10 @@ def create_app(config_name):
     app=Flask(__name__)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
+
+    #jinja2过滤器注册
+    env = app.jinja_env
+    env.filters['myfilter']=myfilter
 
     bootstrap.init_app(app)
     moment.init_app(app)
@@ -55,4 +60,8 @@ def create_app(config_name):
     
     from .mathtool import mathtool as math_blueprint
     app.register_blueprint(math_blueprint,url_prefix='/mathtool')
+
+    from .search import search as search_blueprint
+    app.register_blueprint(search_blueprint,url_prefix='/search')
+
     return app

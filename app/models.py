@@ -42,9 +42,12 @@ class Post(db.Model):
         return json_post
 
     def to_es_json(self):
+        import re
+        dr = re.compile(r'<[^>]+>',re.S)
+        body = dr.sub('',self.body)
         json_post={
             'id': self.id,
-            'body': self.body,
+            'body': body,
             'timestamp': self.timestamp,
             'author_id': self.author_id,
             'body_html': self.body_html
