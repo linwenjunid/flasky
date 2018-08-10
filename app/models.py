@@ -80,6 +80,11 @@ class Post(db.Model):
             db.session.commit()
 
     @staticmethod
+    def init_es_post():
+        for post in Post.query.all():
+            elastic.index(index='flasky', doc_type='posts', id=post.id, body=post.to_es_json())
+
+    @staticmethod
     def init_comment():
         from random import seed,randint
         import forgery_py

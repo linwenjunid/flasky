@@ -5,13 +5,13 @@ from .. import elastic
 
 @search.route('/search', methods = ['POST'])
 def search():
-    form = SearchForm()
+    #form = SearchForm()
     #这里的表单可以从g里面获取
-    if form.validate_on_submit():
+    if g.search_form.validate_on_submit():
         body = {
             "query":{
                 "match":{
-                    "body":form.text.data
+                    "body":g.search_form.text.data
                 }
             },
             "highlight": {

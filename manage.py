@@ -55,6 +55,7 @@ manager.add_command('db',MigrateCommand)
 def deploy():
     upgrade()
     Role.insert_roles()
+    Post.init_es_post()
 
 if __name__=='__main__':
     manager.run()
