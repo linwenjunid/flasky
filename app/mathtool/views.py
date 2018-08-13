@@ -1,15 +1,46 @@
 from flask import render_template,redirect,session,url_for,flash,current_app,request,abort
 from flask_login import login_required,current_user
 from .. import db
-from ..models_math import Math_paper,Math_question
+from ..models_math import Math_paper,Math_question,Math_config
 from . import mathtool
-from .forms import QuestionsForm
+from .forms import QuestionsForm, ConfigForm
 from sqlalchemy import and_
+
+@mathtool.route('/configpaper/', methods=['GET','POST'])
+@login_required
+def configpaper():
+    math_cof=Math_config.query.filter(Math_config.user_id==current_user.id).first()
+    if not math_cof:
+        math_cof=Math_config()
+        math_cof.user_id=current_user.id
+        db.session.add(math_cof)
+        db.session.commit()
+    form=ConfigForm()
+    if form.validate_on_submit():
+        math_cof.isInt=form.isInt.data
+        math_cof.type="".join(form.type.data)
+        math_cof.minval=form.minval.data
+        math_cof.maxval=form.maxval.data
+        math_cof.count =form.count.data
+        return redirect(url_for('mathtool.configpaper'))
+    form.isInt.data  = math_cof.isInt
+    form.type.data   = list(math_cof.type)
+    form.minval.data = math_cof.minval
+    form.maxval.data = math_cof.maxval
+    form.count.data  = math_cof.count 
+    return render_template('mathtool/configpaper.html',form=form) 
 
 @mathtool.route('/newpaper/', methods=['GET','POST'])
 @login_required
 def newpaper():
-    Math_paper.generate_paper(current_user,isInt=True,minval=0,maxval=20,type='12',count=20)
+    math_cof=Math_config.query.filter(Math_config.user_id==current_user.id).first()
+    if not math_cof:
+        math_cof=Math_config()
+        math_cof.user_id=current_user.id
+        db.session.add(math_cof)
+        db.session.commit()
+    
+    Math_paper.generate_paper(current_user,isInt=math_cof.isInt,minval=math_cof.minval,maxval=math_cof.maxval,type=math_cof.type,count=math_cof.count)
     return redirect(url_for('mathtool.listpaper'))
 
 @mathtool.route('/listpaper/')

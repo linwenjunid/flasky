@@ -2,6 +2,16 @@ from . import db
 from datetime import datetime
 from random import seed,randint
 
+class Math_config(db.Model):
+    __tablename__='math_configs'
+    id         = db.Column(db.Integer,primary_key=True)
+    isInt      = db.Column(db.Boolean,default=True)
+    minval     = db.Column(db.Integer,default=5)
+    maxval     = db.Column(db.Integer,default=15)
+    type       = db.Column(db.String(64),default='12')
+    count      = db.Column(db.Integer,default=20)
+    user_id    = db.Column(db.Integer,db.ForeignKey('users.id')) 
+
 class Math_paper(db.Model):
     __tablename__='math_papers'
     id         = db.Column(db.Integer,primary_key=True)
@@ -96,4 +106,25 @@ class Math_question(db.Model):
                 q.a=max(a,b)
                 q.b=min(a,b)
                 q.key=q.a-q.b
+        elif q.op=='3':
+            if randint(0,50)%3==0:
+                q.b=b
+                q.val=a*b
+                q.key=a
+            elif randint(0,50)%3==1:
+                q.a=a
+                q.val=a*b
+                q.key=b
+            else:  
+                q.a=a
+                q.b=b
+                q.key=a*b
+
+
+
+
+
+
+
+ 
         return q

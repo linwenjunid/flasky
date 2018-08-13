@@ -9,7 +9,7 @@ from datetime import datetime
 from markdown import markdown
 from app.exceptions import ValidationError
 import bleach
-from app.models_math import Math_paper
+from app.models_math import Math_paper,Math_config
 
 class Warnsql(db.Model):
     __tablename__='warnsqls'
@@ -190,6 +190,7 @@ class User(UserMixin,db.Model):
     member_since=db.Column(db.DateTime(),default=datetime.utcnow)
     last_seen=db.Column(db.DateTime(),default=datetime.utcnow)
 
+    math_config= db.relationship('Math_config',backref='user', lazy='dynamic')
     posts      = db.relationship('Post',backref='author',lazy='dynamic')
     math_papers= db.relationship('Math_paper',backref='user',lazy='dynamic')
     followed   = db.relationship('Follow',

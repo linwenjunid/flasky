@@ -13,7 +13,7 @@
     {{form.hidden_tag()}}
     <div class="input-group input-group-lg">
     {% if q.a!=None  %}<span class="input-group-addon">{{"%g"%q.a}}</span>{% else %}
-    <span class="input-group-addon">{{form.result}}</span>
+    <span class="input-group-addon">{{form.result(placeholder='请输入答案')}}</span>
     {% endif %}
     <span class="input-group-addon">
       {% if q.op==1   %}+
@@ -23,11 +23,11 @@
       {%endif%}
     </span>
     {% if q.b!=None %}<span class="input-group-addon">{{"%g"%q.b}}</span>{% else %}
-    <span class="input-group-addon">{{form.result}}</span>
+    <span class="input-group-addon">{{form.result(placeholder='请输入答案')}}</span>
     {% endif %}
     <span class="input-group-addon">=</span>
     {% if q.val!=None %}<span class="input-group-addon">{{"%g"%q.val}}</span>{% else %}
-    <span class="input-group-addon">{{form.result}}</span>
+    <span class="input-group-addon">{{form.result(placeholder='请输入答案')}}</span>
     {% endif %}
     <span class="input-group-addon">{{form.submit}}</span>
     </div>
