@@ -119,12 +119,17 @@ class Math_question(db.Model):
                 q.a=a
                 q.b=b
                 q.key=a*b
-
-
-
-
-
-
-
- 
+        elif q.op=='4':
+            if randint(0,50)%3==0:
+                q.b=a
+                q.val=b
+                q.key=a*b
+            elif randint(0,50)%3==1:
+                q.a=a*b
+                q.val=b
+                q.key=a
+            else:
+                q.a=a*b
+                q.b=a
+                q.key=b
         return q
