@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}广场 - Celery{% endblock %}
+
+{% block page_content %}
+
+<div class="page-header">
+    <h1>Celery</h1>
+</div>
+
+<div class="btn-group"><a class="btn btn-primary" href="{{ url_for('celerytool.newtask') }}">生成任务</a></div>
+
+<table class="table table-hover followers">
+    <thead><tr><th>编号</th><th>开始时间</th><th>结束时间</th><th>当前状态</th><th>进度</th></tr></thead>
+    {% for task in tasks %}
+    <tr {%if loop.index%2!=1 %}class="success"{%endif%}>
+    <td>
+    <a href="#"> {{ task.id }} </a>
+    </td>
+    <td>{{ moment(task.start_time).format('YYYY-MM-DD HH:mm:ss') }}</td>
+    <td>
+    {% if task.end_time %}
+    {{ moment(task.end_time).format('YYYY-MM-DD HH:mm:ss') }}
+    {% endif %}
+    </td>
+    <td>{{ task.task_status }}</td>
+    <td>{{ task.task_percent}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination,'celerytool.listtask') }}
+</div>
+{% endif %}
+
+{% endblock %}
+

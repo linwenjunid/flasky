@@ -44,6 +44,13 @@ class Config:
     #elasticsearch参数
     ELASTICSEARCH_URL='http://192.168.134.151:9200'
 
+    #celery参数
+    CELERY_TIMEZONE = 'Asia/Shanghai'
+    CELERY_BROKER_URL = 'redis://:hadoop@192.168.134.200:6379/0'
+    CELERY_RESULT_BACKEND = 'redis://:hadoop@192.168.134.200:6379/1'
+    CELERY_IMPORTS = ("app.celery.tasks",)
+    FLASKY_TASK_PER_PAGE=10
+    
     @staticmethod
     def init_app(app):
         #日志处理 

@@ -10,6 +10,7 @@ from flask_ckeditor import CKEditor
 from flask_apscheduler import APScheduler
 from flask_elastic import Elastic
 from .jinjafilters import myfilter
+from flask_celery import Celery
 
 bootstrap=Bootstrap()
 moment=Moment()
@@ -19,6 +20,7 @@ pagedown=PageDown()
 ckeditor = CKEditor()
 scheduler=APScheduler()
 elastic = Elastic()
+celery = Celery()
 
 login_manager=LoginManager()
 login_manager.session_protection='strong'
@@ -43,6 +45,8 @@ def create_app(config_name):
     ckeditor.init_app(app)
     elastic.init_app(app)
 
+    celery.init_app(app)
+
     scheduler.init_app(app)
     scheduler.start()
 
@@ -63,5 +67,8 @@ def create_app(config_name):
 
     from .search import search as search_blueprint
     app.register_blueprint(search_blueprint,url_prefix='/search')
+
+    from .celery import celerytool as celery_blueprint
+    app.register_blueprint(celery_blueprint,url_prefix='/celery')
 
     return app
