@@ -9,27 +9,59 @@
 <div class="page-header">
     <h1>Celery</h1>
 </div>
-
 <div class="btn-group"><a class="btn btn-primary" href="{{ url_for('celerytool.newtask') }}">生成任务</a></div>
 
 <table class="table table-hover followers">
-    <thead><tr><th>编号</th><th>开始时间</th><th>结束时间</th><th>当前状态</th><th>进度</th></tr></thead>
+    <thead><tr><th>编号</th><th>开始时间</th><th>结束时间</th><th>状态</th><th>进度</th></tr></thead>
     {% for task in tasks %}
     <tr {%if loop.index%2!=1 %}class="success"{%endif%}>
     <td>
-    <a href="#"> {{ task.id }} </a>
+    <div class="mymid"><a href="{{ url_for('celerytool.test',task_id=task.task_id) }}"> {{ task.id }} </a></div>
     </td>
-    <td>{{ moment(task.start_time).format('YYYY-MM-DD HH:mm:ss') }}</td>
+
     <td>
+    <div class="mymid">{{ moment(task.start_time).format('YYYY-MM-DD HH:mm:ss') }}</div>
+    </td>
+
+    <td>
+    <div id="endtime{{task.task_id}}" class="mymid">
     {% if task.end_time %}
     {{ moment(task.end_time).format('YYYY-MM-DD HH:mm:ss') }}
     {% endif %}
+    </div>
     </td>
-    <td>{{ task.task_status }}</td>
-    <td>{{ task.task_percent}}</td>
+
+    <td><div id="status{{task.task_id}}" class="mymid">{{task.task_status}}</div></td>
+
+    <td><div class="mymid">
+        <div class="progress">
+        <div id="{{ task.task_id }}" class="progress-bar progress-bar-success" role="progressbar"
+         aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"
+         style="width:{{ task.task_percent }}%">
+        {{task.task_percent}}%
+        </div>
+        </div>
+    </div></td>
     </tr>
     {% endfor %}
 </table>
+
+<script>
+setInterval(function() {
+  $("div").filter(".progress-bar").each(function(){
+    var id =$(this).attr('id');
+    $.ajax({url:"/celery/status/"+id,success:function(result){
+      var res=result.task_percent+"%"
+      $("#"+id).css("width",res);
+      $("#"+id).text(res)
+      $("#status"+id).text(result.task_status)
+      if(result.end_time != null){
+        $("#endtime"+id).text(result.end_time)
+      }
+    }});
+  });
+}, 2000);
+</script>
 
 {% if pagination %}
 <div class="pagination">

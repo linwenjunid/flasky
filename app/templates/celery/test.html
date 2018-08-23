@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}广场 - Celery{% endblock %}
+
+{% block page_content %}
+
+<script>
+setInterval(function() {
+    $.ajax({url:"/celery/status/{{ task_id }}",success:function(result){
+        $("#task_percent").css("width",result.task_percent+"%")
+        $("#task_percent").text(result.task_percent+"%")
+    }});
+}, 2000);
+</script>
+
+<div class="page-header">
+    <h1>Celery</h1>
+</div>
+<br>
+<div class="progress">
+    <div id="task_percent" class="progress-bar progress-bar-success" role="progressbar"
+     aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"
+     style="width:{{ task_percent }}%">
+    {{ task_percent }}%
+    </div>
+</div>
+<div><a class="btn btn-primary" href="{{ url_for('celerytool.listtask') }}">返回</a></div>
+{% endblock %}
+
