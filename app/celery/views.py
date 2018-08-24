@@ -56,17 +56,18 @@ def listtask():
         error_out=False)
     tasks = pagination.items
     for task in tasks:
-        t=mytask.AsyncResult(task.task_id)
-        task.task_status=t.state
-        if t.state=='PROGRESS':
-            task.end_time=None
-            task.task_percent=round(t.info.get('current')*100/t.info.get('total'),1)
-        elif t.state=='SUCCESS':
-            task.end_time=datetime.datetime.strptime(t.info.get('end_time'),'%Y-%m-%d %H:%M:%S')
-            task.task_percent=round(t.info.get('current')*100/t.info.get('total'),1)
-        else:
-            task.end_time=None
-            task.task_percent=0
-        db.session.add(task)
+        if task.task_status not in ['SUCCESS','FAILURE']:
+            t=mytask.AsyncResult(task.task_id)
+            task.task_status=t.state
+            if t.state=='PROGRESS':
+                task.end_time=None
+                task.task_percent=round(t.info.get('current')*100/t.info.get('total'),1)
+            elif t.state=='SUCCESS':
+                task.end_time=datetime.datetime.strptime(t.info.get('end_time'),'%Y-%m-%d %H:%M:%S')
+                task.task_percent=round(t.info.get('current')*100/t.info.get('total'),1)
+            else:
+                task.end_time=None
+                task.task_percent=0
+            db.session.add(task)
     db.session.commit() 
     return render_template('celery/listtask.html', tasks=tasks, pagination=pagination,page=page)
