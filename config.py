@@ -60,6 +60,7 @@ class Config:
         handler.setLevel(logging.DEBUG)
         handler.setFormatter(myformat)
         app.logger.addHandler(handler)
+        app.logger.setLevel(logging.INFO)
 
 class DeveConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEVE_SQLURL')
